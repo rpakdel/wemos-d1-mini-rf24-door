@@ -1,0 +1,5 @@
+Release
+__vm
+node_modules
+*.user
+*.suo

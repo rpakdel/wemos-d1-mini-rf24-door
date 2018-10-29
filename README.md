@@ -3,7 +3,7 @@
 ## Hardware
 * Base-station with relay
 
-![Wemos D1 mini + NRF24L01 Garage door sensor and opener](https://i.imgur.com/5AiFq67m.jpg)
+![Wemos D1 mini + NRF24L01 Garage door sensor and opener + 315Mhz RF receiver](/wemos-d1-mini-webserver/wemos-d1-mini-rf24-door.JPG?raw=true)
 
 * Wireless door sensor: 
 

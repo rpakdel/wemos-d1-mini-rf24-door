@@ -13,9 +13,10 @@ https://giphy.com/gifs/3o752bfTEIFtwjCC2I/html5
 
 * The door sensor uses a generic window reed switch used commonly for home security (not operational yet).
 * The door sensor is a separate Arduino that talks to the Wemos D1 mini via NRF24L01.
-* 
+
 * I found that shorting the two connections on the garage door opener toggles the door.
-* A simple relay (Normally Open) is used to achieve the same from Arduino.
+* A simple relay (Normally Open, Active LOW) is used to achieve the same from Arduino.
+* The Wemos D1 is 3.3v and I found using the GPIO pins to keep the relay HIGH needed a 3.3V to 5V trigger converter.
 
 ## Software
 * The web page and web API are hosted on the Wemos D1 including the HTML, client side JavaScript and CSS. 

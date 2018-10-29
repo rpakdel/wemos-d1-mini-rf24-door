@@ -13,10 +13,10 @@ AdafruitIO::~AdafruitIO()
 
 void AdafruitIO::PostDoorStatus(Door& door, Print& print)
 {
-    int status = door.GetStatus();
+    int status = door.GetStatus(print);
     long m = millis();
     // if the status hasn't changed, check if enough time has gone by
-    if (status == mPrevDoorStatus)
+    if (status == mPrevDoorCode)
     {
         long diff = m - prevPostMillis;
         if (diff < AIO_POST_DOOR_WAIT_MILLIS)
@@ -31,9 +31,9 @@ void AdafruitIO::PostDoorStatus(Door& door, Print& print)
         prevPostMillis = m;
     }
 
-    mPrevDoorStatus = status;
+    mPrevDoorCode = status;
     print.println(F("POST_DOOR_AIO"));
-    if (status == DOOR_IS_OPEN)
+    if (status == DoorCode::Open)
     {
         openPostCount++;
     }

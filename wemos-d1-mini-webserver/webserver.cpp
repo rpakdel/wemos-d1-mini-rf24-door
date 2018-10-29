@@ -24,7 +24,9 @@ const char content_type_json[] PROGMEM = "Content-Type: application/json";
 const char content_type_plain[] PROGMEM = "Content-Type: text/plain";
 const char content_length_zero[] PROGMEM = "Content-Length: 0";
 
-Webserver::Webserver() : mServer(80)
+Webserver::Webserver(Door& door) : 
+    mServer(80),
+    mDoor(door)
 {
 
 }
@@ -39,8 +41,6 @@ void Webserver::Begin(Print& print)
     mServer.begin();
     print.println(F("WEBSERVER_STARTED"));
 }
-
-
 
 void Webserver::Get_index_html(WiFiClient& client, Print& print)
 {
@@ -126,7 +126,7 @@ void Webserver::PrintClientRequest(String& req, Print& print)
 }
 
 
-void Webserver::HandleClient(WiFiClient& client, Door& door, Print& print)
+void Webserver::HandleClient(WiFiClient& client, Print& print)
 {
     // Read the first line of the request
     String req = client.readStringUntil('\r');
@@ -151,9 +151,9 @@ void Webserver::HandleClient(WiFiClient& client, Door& door, Print& print)
     }
     else if (req.indexOf(F("POST /api/v1/toggle")) >= 0)
     {
-        print.println(F("WAPI_TG"));
+        print.println(F("WEBAPI TOGGLE REQUEST"));
 
-        door.Toggle(print);
+        mDoor.Toggle(print);
 
         // status
         String s = FPSTR(http_status_200_OK);
@@ -169,7 +169,7 @@ void Webserver::HandleClient(WiFiClient& client, Door& door, Print& print)
     }
     else if (req.indexOf(F("GET /api/v1/status")) >= 0)
     {
-        int result = door.GetStatus();
+        int result = mDoor.GetStatus(print);
         // status
         String s = FPSTR(http_status_200_OK);
         s += FPSTR(newLine);
@@ -178,29 +178,35 @@ void Webserver::HandleClient(WiFiClient& client, Door& door, Print& print)
         s += FPSTR(newLine);
         // blank line indicates data
         s += FPSTR(newLine);
-        if (result == DOOR_IS_OPEN)
+        switch (result)
         {
-            s += F("IsOpen");
+            case DoorCode::Open:
+                s += F("IsOpen");
+                break;
+
+            case DoorCode::Close:
+                s += F("IsClosed");
+                break;
+
+            case DoorCode::Unknown:
+                s += F("IsUnknown");
+                break;
         }
-        else
-        {
-            s += F("IsClosed");
-        }
+        
         const char* buffer = s.c_str();
         ClientWriteString(client, buffer);
     }
     else
     {
-        print.println(F("WAPI_NOTFOUND"));
+        print.println(F("WEBAPI 404 NOTFOUND"));
         String s = FPSTR(http_status_404_NOTFOUND);
         const char* buffer = s.c_str();
         ClientWriteString(client, buffer);
     }
 }
 
-void Webserver::Loop(Door& door, Print& print)
+void Webserver::Loop(Print& print)
 {
-    
     // Check if a client has connected
     WiFiClient client = mServer.available();
     if (!client)
@@ -208,13 +214,11 @@ void Webserver::Loop(Door& door, Print& print)
         return;
     }
 
-    
-
     // Wait until the client sends some data
     while (!client.available())
     {
         delay(1);
     }
 
-    HandleClient(client, door, print);
+    HandleClient(client, print);
 }

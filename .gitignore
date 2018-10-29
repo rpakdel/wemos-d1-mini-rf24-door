@@ -3,3 +3,6 @@ __vm
 node_modules
 *.user
 *.suo
+/wemos-d1-mini-webserver/aio.h
+/wemos-d1-mini-webserver/webhookurls.h
+/wemos-d1-mini-webserver/myssid.h

@@ -1,51 +1,41 @@
 // To build in VS Micro, must disable Deep Search
 
+#include <TimeLib.h>
+#include <Time.h>
 #include <ArduinoHttpClient.h>
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
-#include "myssid.h"
+#include <SPI.h>
+#include <RF24.h>
+#include <nRF24L01.h>
+
 #include "webserver.h"
-#include "adafruitio.h"
+#include "ifttwebhook.h"
+#include "controller.h"
+#include "mywifi.h"
+#include "ntp.h"
 
 #define DEBUG_SERIAL Serial
 #define DEBUG_SERIAL_BAUD_RATE 115200
 
-Webserver server;
-AdafruitIO aio;
 Door door;
+MyWifi wifi;
+Webserver server(door);
+IfttWebhook iftt;
+Ntp ntp;
 
-void setupWifi(Print& print)
-{
-    print.println();
-    print.print(F("SSID "));
-    print.println(MYSSID);
-    print.println();
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(MYSSID, MYPASSWORD);
-    while (WiFi.status() != WL_CONNECTED) 
-    {
-        delay(500);
-        Serial.print(F("."));
-    }
-    print.println();
-    print.print(F("WiFi connected, IP: "));
-    print.println(WiFi.localIP());
-}
+Controller controller(wifi, server, door, iftt, ntp);
 
 void setup() 
 {
     DEBUG_SERIAL.begin(DEBUG_SERIAL_BAUD_RATE);
+    delay(1000);
 
-    pinMode(DOOR_STATUS_IN_PIN, INPUT_PULLUP);
-    pinMode(DOOR_SIGNAL_OUT_PIN, OUTPUT);
-
-    setupWifi(DEBUG_SERIAL);
-    server.Begin(DEBUG_SERIAL);
+    controller.Setup(DEBUG_SERIAL);
 }
 
 void loop() 
 {
-    aio.PostDoorStatus(door, DEBUG_SERIAL);
-    server.Loop(door, DEBUG_SERIAL);
+    controller.Loop(DEBUG_SERIAL);
 }

@@ -30,7 +30,7 @@ private:
     WiFiClient mClient;
     HttpClient mHttpClient;
 
-    int mPrevDoorStatus = DOOR_IS_CLOSED;
+    int mPrevDoorCode = DoorCode::Unknown;
     long prevPostMillis = 0;
     long openPostCount = 0;
     char postBody[256];

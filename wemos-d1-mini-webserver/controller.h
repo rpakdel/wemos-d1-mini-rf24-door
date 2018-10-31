@@ -27,6 +27,7 @@ private:
     MyWifi mWifi;
     Ntp mNtp;
     DoorCode mPrevDoorStatus = DoorCode::Unknown;
+    long mPrevDoorOpenMillis = 0;
     int mNum15minInc = 1;
 
     void CheckDoorStatus(Print& print);

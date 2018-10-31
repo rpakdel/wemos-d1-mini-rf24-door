@@ -56,7 +56,7 @@ time_t Ntp::GetNTPPacket(Print &print)
     byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packet
 
     int tryCount = 0;
-    while (tryCount < 20)
+    while (tryCount < 3)
     {
         if (mItpClient.parsePacket())
         {

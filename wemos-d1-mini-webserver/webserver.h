@@ -7,16 +7,15 @@
 class Webserver
 {
 public:
-    Webserver(Door& door);
+    Webserver();
     ~Webserver();
 
     void Begin(Print& print);
-    void Loop(Print& print);
+    void Loop(Door& door, Print& print);
 private:
     WiFiServer mServer;
-    Door mDoor;
 
-    void HandleClient(WiFiClient& client, Print & print);
+    void HandleClient(WiFiClient& client, Door& door, Print & print);
     void Get_index_html(WiFiClient& client, Print& print);
     void ClientWriteString(WiFiClient & client, const char * buffer);
     void Get_client_js(WiFiClient & client);

@@ -69,7 +69,8 @@ DoorCode Door::GetStatusRF24(Print& print)
     {
         uint8_t buffer;
         mRadio.read((uint8_t*)&buffer, sizeof(uint8_t));
-        //print.print(F("Door status code "));
+    
+        //print.print(F("Got door status code "));
         //print.println(buffer);
         mPrevDoorStatusCodeMillis = currentMillis;
         if (buffer == DOOR_IS_CLOSED_CODE)
@@ -84,12 +85,17 @@ DoorCode Door::GetStatusRF24(Print& print)
         {
             mStatus = DoorCode::Unknown;
         }
+
+        return mStatus;
     }
     else if ((currentMillis - mPrevDoorStatusCodeMillis) > MAX_DOOR_STATUS_WAIT_MILLIS)
     {
+        print.println(F("Waited too long for door status code"));
         mStatus = DoorCode::Unknown;
+        return mStatus;
     }
 
+    // no change
     return mStatus;
 }
 

@@ -39,23 +39,32 @@ void Controller::Setup(Print& print)
 
 void Controller::PostDoorLeftOpenToIFTT(DoorCode doorStatus, Print& print)
 {
-    long mil = millis();
-    long sec = mil / 1000;
-    long min = sec / 60;
-    // every 15 minutes
-    int numMinutesOpenThreshold = mNum15minInc * 15;
-    int r = min / numMinutesOpenThreshold;
-    //print.printf("%d %d %d %d", mil, sec, min, r);
-    //print.println();
-    if (r > 0)
+    long currentMillis = millis();
+    if (doorStatus == DoorCode::Open)
     {
-        mNum15minInc++;
-        // reset back to 1 after 24 hours (24 * 4)
-        if (mNum15minInc >= 96)
+        long diff = currentMillis - mPrevDoorOpenMillis;
+
+        long sec = diff / 1000;
+        long min = sec / 60;
+        // every 15 minutes
+        int numMinutesOpenThreshold = mNum15minInc * 15;
+        int r = min / numMinutesOpenThreshold;
+        //print.printf("%d %d %d %d", mil, sec, min, r);
+        //print.println();
+        if (r > 0)
         {
-            mNum15minInc = 1;
+            mNum15minInc++;
+            // reset back to 1 after 24 hours (24 * 4)
+            if (mNum15minInc >= 96)
+            {
+                mNum15minInc = 1;
+            }
+            mIftt.PostDoorLeftOpen(numMinutesOpenThreshold, print);
         }
-        mIftt.PostDoorLeftOpen(numMinutesOpenThreshold, print);
+    }
+    else
+    {
+        mPrevDoorOpenMillis = currentMillis;
     }
 }
 
@@ -99,5 +108,5 @@ void Controller::CheckDoorStatus(Print& print)
 void Controller::Loop(Print& print)
 {
     CheckDoorStatus(print);
-    mServer.Loop(print);
+    mServer.Loop(mDoor, print);
 }

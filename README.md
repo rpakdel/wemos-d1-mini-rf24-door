@@ -21,9 +21,8 @@ https://giphy.com/gifs/3o752bfTEIFtwjCC2I/html5
 ## Software
 * The web page and web API are hosted on the Wemos D1 including the HTML, client side JavaScript and CSS. 
 * I'm using Basic HTTP auth + SSL to reduce risk of somebody getting a hold of the door.
-* The door status is uploaded to Adafruit.IO once per minute by the ESP8266.
-* This IFTT applet then sends me notifications if the door has been left open: 
-  https://ifttt.com/applets/317604p-if-the-door-is-opened-send-me-a-notification
+* This IFTT Webhook service and applet are used to send me notifications: 
+  https://ifttt.com/applets/87917426d-door-online
   
 ## High Level Data Flow
 

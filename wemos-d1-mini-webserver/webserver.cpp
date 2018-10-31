@@ -24,9 +24,8 @@ const char content_type_json[] PROGMEM = "Content-Type: application/json";
 const char content_type_plain[] PROGMEM = "Content-Type: text/plain";
 const char content_length_zero[] PROGMEM = "Content-Length: 0";
 
-Webserver::Webserver(Door& door) : 
-    mServer(80),
-    mDoor(door)
+Webserver::Webserver() : 
+    mServer(80)
 {
 
 }
@@ -126,7 +125,7 @@ void Webserver::PrintClientRequest(String& req, Print& print)
 }
 
 
-void Webserver::HandleClient(WiFiClient& client, Print& print)
+void Webserver::HandleClient(WiFiClient& client, Door& door, Print& print)
 {
     // Read the first line of the request
     String req = client.readStringUntil('\r');
@@ -153,7 +152,7 @@ void Webserver::HandleClient(WiFiClient& client, Print& print)
     {
         print.println(F("WEBAPI TOGGLE REQUEST"));
 
-        mDoor.Toggle(print);
+        door.Toggle(print);
 
         // status
         String s = FPSTR(http_status_200_OK);
@@ -169,7 +168,7 @@ void Webserver::HandleClient(WiFiClient& client, Print& print)
     }
     else if (req.indexOf(F("GET /api/v1/status")) >= 0)
     {
-        int result = mDoor.GetStatus(print);
+        DoorCode result = door.GetStatus(print);
         // status
         String s = FPSTR(http_status_200_OK);
         s += FPSTR(newLine);
@@ -205,7 +204,7 @@ void Webserver::HandleClient(WiFiClient& client, Print& print)
     }
 }
 
-void Webserver::Loop(Print& print)
+void Webserver::Loop(Door& door, Print& print)
 {
     // Check if a client has connected
     WiFiClient client = mServer.available();
@@ -220,5 +219,5 @@ void Webserver::Loop(Print& print)
         delay(1);
     }
 
-    HandleClient(client, print);
+    HandleClient(client, door, print);
 }

@@ -33,26 +33,26 @@ void IfttWebhook::PostDoorOpened(Print& print)
     print.println(statusCode);
 }
 
-void IfttWebhook::PostDoorOpenedWithTime(int hour, int min, Print& print)
-{
-    print.print(F("IFTT_DOOROPENED POST... "));
-
-    char postBody[256];
-    
-    sprintf(postBody, "{ \"value1\": \"%d\", \"value2\": \"%d\" }\0", hour, min);
-
-    mHttpClient.beginRequest();
-    mHttpClient.post(DoorOpenedPostURL);
-
-    mHttpClient.sendHeader(CONTENT_TYPE, CONTENT_TYPE_APP_JSON);
-    mHttpClient.sendHeader(CONTENT_LENGTH, strlen(postBody));
-    mHttpClient.beginBody();
-    mHttpClient.print(postBody);
-    mHttpClient.endRequest();
-
-    int statusCode = mHttpClient.responseStatusCode();
-    print.println(statusCode);
-}
+//void IfttWebhook::PostDoorOpenedWithTime(int hour, int min, Print& print)
+//{
+//    print.print(F("IFTT_DOOROPENED POST... "));
+//
+//    char postBody[256];
+//    
+//    sprintf(postBody, "{ \"value1\": \"%d\", \"value2\": \"%d\" }\0", hour, min);
+//
+//    mHttpClient.beginRequest();
+//    mHttpClient.post(DoorOpenedPostURL);
+//
+//    mHttpClient.sendHeader(CONTENT_TYPE, CONTENT_TYPE_APP_JSON);
+//    mHttpClient.sendHeader(CONTENT_LENGTH, strlen(postBody));
+//    mHttpClient.beginBody();
+//    mHttpClient.print(postBody);
+//    mHttpClient.endRequest();
+//
+//    int statusCode = mHttpClient.responseStatusCode();
+//    print.println(statusCode);
+//}
 
 void IfttWebhook::PostDoorLeftOpen(int minutes, Print& print)
 {
@@ -73,23 +73,40 @@ void IfttWebhook::PostDoorLeftOpen(int minutes, Print& print)
     print.println(statusCode);
 }
 
-void IfttWebhook::PostDoorOnline(int hour, int min, Print& print)
+void IfttWebhook::PostDoorIsOnline(Print& print)
 {
-    print.print(F("IFTT_DOORONLINE POST... "));
+    print.print(F("IFTT_DOORISONLINE POST... "));
 
-    char postBody[256];
-
-    sprintf(postBody, "{ \"value1\": \"%d\", \"value2\": \"%d\" }\0", hour, min);
-
-    mHttpClient.beginRequest();
-    mHttpClient.post(DoorOnlinePostURL);
-
-    mHttpClient.sendHeader(CONTENT_TYPE, CONTENT_TYPE_APP_JSON);
-    mHttpClient.sendHeader(CONTENT_LENGTH, strlen(postBody));
-    mHttpClient.beginBody();
-    mHttpClient.print(postBody);
-    mHttpClient.endRequest();
+    int errCode = mHttpClient.post(DoorOpenedPostURL);
+    if (errCode != 0)
+    {
+        print.print(F("ERR "));
+        print.print(errCode);
+        print.print(F(" "));
+    }
 
     int statusCode = mHttpClient.responseStatusCode();
+    mHttpClient.stop();
     print.println(statusCode);
 }
+
+//void IfttWebhook::PostDoorIsOnlineWithTime(int hour, int min, Print& print)
+//{
+//    print.print(F("IFTT_DOORONLINE POST... "));
+//
+//    char postBody[256];
+//
+//    sprintf(postBody, "{ \"value1\": \"%d\", \"value2\": \"%d\" }\0", hour, min);
+//
+//    mHttpClient.beginRequest();
+//    mHttpClient.post(DoorOnlinePostURL);
+//
+//    mHttpClient.sendHeader(CONTENT_TYPE, CONTENT_TYPE_APP_JSON);
+//    mHttpClient.sendHeader(CONTENT_LENGTH, strlen(postBody));
+//    mHttpClient.beginBody();
+//    mHttpClient.print(postBody);
+//    mHttpClient.endRequest();
+//
+//    int statusCode = mHttpClient.responseStatusCode();
+//    print.println(statusCode);
+//}

@@ -1,20 +1,20 @@
 #include "door.h"
 
-byte mRFAddress[][6] = { "1Door" };
 
-Door::Door() : 
-    mRadio(RF_CEPIN, RF_CSPIN)
+
+Door::Door(Radio& radio) :
+    mRadio(radio)
 {
     
 }
 
 void Door::Setup(Print& print)
 {
-    print.println(F("DOOR_SETUP"));
+    mRadio.Setup(print);
+    print.print(F("DOOR_SETUP..."));
     pinMode(DOOR_RELAY_PIN, OUTPUT);
     digitalWrite(DOOR_RELAY_PIN, HIGH);
-
-    SetupRadio(print);
+    print.println(F("COMPLETE"));
 }
 
 Door::~Door()
@@ -37,7 +37,7 @@ DoorCode prevTestDoorCode = DoorCode::Unknown;
 DoorCode Door::GetStatusTestOpenClose(Print& print)
 {
     long currentMillis = millis();
-    long delay = 10 * 1000; // 5s interval
+    long delay = 10 * 1000; // 10s interval
     long diff = currentMillis - prevTestMillis;
 
     DoorCode status = DoorCode::Unknown;
@@ -65,10 +65,10 @@ DoorCode Door::GetStatusTestOpenClose(Print& print)
 DoorCode Door::GetStatusRF24(Print& print)
 {
     long currentMillis = millis();
-    if (mRadio.available())
+    if (mRadio.Available())
     {
         uint8_t buffer;
-        mRadio.read((uint8_t*)&buffer, sizeof(uint8_t));
+        mRadio.Read((uint8_t*)&buffer, sizeof(uint8_t));
     
         //print.print(F("Got door status code "));
         //print.println(buffer);
@@ -108,16 +108,3 @@ void Door::Toggle(Print& print)
     print.println(F("DONE"));
 }
 
-void Door::SetupRadio(Print& print)
-{
-    print.print(F("RADIO_SETUP..."));
-    mRadio.begin();
-    mRadio.setPALevel(RF24_PA_MIN);
-    mRadio.setAutoAck(1);
-    mRadio.setRetries(15, 15);
-    mRadio.openReadingPipe(0, mRFAddress[0]);
-    mRadio.startListening();
-    // wait until initialized
-    delay(1000);
-    print.println(F("COMPLETE"));
-}

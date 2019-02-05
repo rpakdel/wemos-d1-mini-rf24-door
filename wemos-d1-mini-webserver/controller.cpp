@@ -3,26 +3,16 @@
 #include <Time.h>
 
 
-Controller::Controller(MyWifi& wifi, Webserver& server, Door& door, IfttWebhook& iftt, Ntp& ntp) :
+Controller::Controller(MyWifi& wifi, Webserver& server, Door& door, IfttWebhook& iftt) :
     mWifi(wifi),
     mServer(server),
     mDoor(door),
-    mIftt(iftt),
-    mNtp(ntp)
+    mIftt(iftt)
 {
 }
 
 Controller::~Controller()
 {
-}
-
-void Controller::GetCurrentHourMinuteFromNTP(int& h, int& m, Print& print)
-{
-    time_t epoch_utc = mNtp.GetCurrentEpochTime(print);
-    // convert to local time
-    time_t epoch_pst = epoch_utc - (7 * 60 * 60);
-    h = hour(epoch_pst);
-    m = minute(epoch_pst);
 }
 
 void Controller::Setup(Print& print)
@@ -31,10 +21,7 @@ void Controller::Setup(Print& print)
     mWifi.Setup(print);
     mServer.Begin(print);
 
-    int h;
-    int m;
-    GetCurrentHourMinuteFromNTP(h, m, print);
-    mIftt.PostDoorOnline(h, m, print);
+    mIftt.PostDoorIsOnline(print);
 }
 
 void Controller::PostDoorLeftOpenToIFTT(DoorCode doorStatus, Print& print)
@@ -70,8 +57,6 @@ void Controller::PostDoorLeftOpenToIFTT(DoorCode doorStatus, Print& print)
 
 void Controller::GetDoorOpenedToIFTT(DoorCode doorStatus, Print& print)
 {
-    int h;
-    int m;
     if (mPrevDoorStatus != doorStatus)
     {
         mPrevDoorStatus = doorStatus;
@@ -79,10 +64,9 @@ void Controller::GetDoorOpenedToIFTT(DoorCode doorStatus, Print& print)
         switch (doorStatus)
         {
         case DoorCode::Open:
-            GetCurrentHourMinuteFromNTP(h, m, print);
-            print.printf("DOOR OPENED %d:%d", h, m);
+            print.printf("DOOR OPENED");
             print.println();
-            mIftt.PostDoorOpenedWithTime(h, m, print);
+            mIftt.PostDoorOpened(print);
             
             break;
 

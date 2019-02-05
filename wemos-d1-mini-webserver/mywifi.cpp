@@ -12,10 +12,11 @@ MyWifi::~MyWifi()
 
 void MyWifi::Setup(Print& print)
 {
-    print.println();
-    print.print(F("SSID "));
-    print.println(MYSSID);
-    print.println();
+
+    print.print(F("WIFI_SETUP..."));
+    print.print(F("SSID '"));
+    print.print(MYSSID);
+    print.print(F("'..."));
     WiFi.mode(WIFI_STA);
     WiFi.begin(MYSSID, MYPASSWORD);
     while (WiFi.status() != WL_CONNECTED)
@@ -23,7 +24,6 @@ void MyWifi::Setup(Print& print)
         delay(500);
         Serial.print(F("."));
     }
-    print.println();
-    print.print(F("WiFi connected, IP: "));
+    print.print(F("COMPLETE, IP: "));
     print.println(WiFi.localIP());
 }

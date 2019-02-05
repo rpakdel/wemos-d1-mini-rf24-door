@@ -9,9 +9,10 @@ public:
     IfttWebhook();
     ~IfttWebhook();
     void PostDoorOpened(Print& print);
-    void PostDoorOpenedWithTime(int hour, int min, Print& print);
+    //void PostDoorOpenedWithTime(int hour, int min, Print& print);
     void PostDoorLeftOpen(int minutes, Print& print);
-    void PostDoorOnline(int hour, int min, Print & print);
+    void PostDoorIsOnline(Print & print);
+    //void PostDoorIsOnlineWithTime(int hour, int min, Print & print);
 private:
     WiFiClient mClient;
     HttpClient mHttpClient;

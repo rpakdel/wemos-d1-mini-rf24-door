@@ -14,18 +14,19 @@
 #include "ifttwebhook.h"
 #include "controller.h"
 #include "mywifi.h"
-#include "ntp.h"
+#include "radio.h"
+//#include "ntp.h"
 
 #define DEBUG_SERIAL Serial
 #define DEBUG_SERIAL_BAUD_RATE 115200
 
-Door door;
+Radio mRadio;
+Door door(mRadio);
 MyWifi wifi;
 Webserver server;
 IfttWebhook iftt;
-Ntp ntp;
 
-Controller controller(wifi, server, door, iftt, ntp);
+Controller controller(wifi, server, door, iftt);
 
 void setup() 
 {

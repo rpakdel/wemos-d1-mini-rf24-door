@@ -37,8 +37,9 @@ Webserver::~Webserver()
 
 void Webserver::Begin(Print& print)
 {
+    print.print(F("WEBSERVER_START..."));
     mServer.begin();
-    print.println(F("WEBSERVER_STARTED"));
+    print.println(F("COMPLETE"));
 }
 
 void Webserver::Get_index_html(WiFiClient& client, Print& print)

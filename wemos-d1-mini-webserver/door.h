@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <RF24.h>
+#include "radio.h"
 
 enum DoorCode
 {
@@ -12,9 +12,6 @@ enum DoorCode
 
 #define DOOR_RELAY_PIN D0
 
-#define RF_CEPIN D2
-#define RF_CSPIN D8
-
 #define MAX_DOOR_STATUS_WAIT_MILLIS 60000 // 60 seconds
 
 
@@ -24,7 +21,7 @@ enum DoorCode
 class Door
 {
 public:
-    Door();
+    Door(Radio& radio);
     
     ~Door();
 
@@ -36,12 +33,11 @@ public:
     void Toggle(Print& print);
 
 private:
-    RF24 mRadio;
+    
+    Radio mRadio;
     DoorCode mStatus = DoorCode::Unknown;
     long mPrevDoorStatusCodeMillis = 0;
     
-    void SetupRadio(Print& print);
-
     DoorCode GetStatusRF24(Print& print);
     DoorCode GetStatusTestOpenClose(Print& print);
     DoorCode GetStatusTestAlwaysOpen(Print & print);

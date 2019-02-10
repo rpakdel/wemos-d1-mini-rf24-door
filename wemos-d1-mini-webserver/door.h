@@ -10,7 +10,7 @@ enum DoorCode
     Open = 1,
 };
 
-#define DOOR_RELAY_PIN D0
+#define DOOR_RELAY_PIN 16
 
 #define MAX_DOOR_STATUS_WAIT_MILLIS 60000 // 60 seconds
 

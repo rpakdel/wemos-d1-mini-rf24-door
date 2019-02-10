@@ -77,7 +77,7 @@ void IfttWebhook::PostDoorIsOnline(Print& print)
 {
     print.print(F("IFTT_DOORISONLINE POST... "));
 
-    int errCode = mHttpClient.post(DoorOpenedPostURL);
+    int errCode = mHttpClient.post(DoorOnlinePostURL);
     if (errCode != 0)
     {
         print.print(F("ERR "));

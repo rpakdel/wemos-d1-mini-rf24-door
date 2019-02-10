@@ -114,6 +114,7 @@
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClInclude Include="mywifi.h" />
+    <ClInclude Include="radio.h" />
     <ClInclude Include="webhookurls.h" />
     <ClInclude Include="webserver.h" />
     <ClInclude Include="__vm\.wemos-d1-mini-webserver.vsarduino.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="door.cpp" />
     <ClCompile Include="ifttwebhook.cpp" />
     <ClCompile Include="mywifi.cpp" />
+    <ClCompile Include="radio.cpp" />
     <ClCompile Include="webserver.cpp" />
   </ItemGroup>
   <PropertyGroup>
